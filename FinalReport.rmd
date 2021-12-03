@@ -20,7 +20,7 @@ TheData$treatment <- relevel(TheData$treatment, ref = 'placebo' )
 
 # Introduction
 
-A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups consisting of Males, Females, just the drug users, and just those in the LGBTQ community. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Part of the information you need to compute is the so-called effectiveness of the drug for each subgroup of people. Include a 95% confidence interval of the effectiveness for each different subgroup. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
+A new preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups consisting of Males, Females, just the drug users, and just those in the LGBTQ community. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Part of the information you need to compute is the so-called effectiveness of the drug for each subgroup of people. Include a 95% confidence interval of the effectiveness for each different subgroup. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
 
 # Males
 
@@ -136,5 +136,42 @@ the drug effectiveness for females is `r effectiveness`%
 
 # LGBTQ
 
+```{r}
+LGBTQDataSet = filter(TheData, LGBTQ == "gay")
+```
+
+```{r}
+barchartGC(~infected + treatment,data=LGBTQDataSet)
+barchartGC(~infected + treatment,data = LGBTQDataSet, type="percent")
+
+```
+
+The plot shows that the gays who took the drug were less likely to get infected than those who took the placebo.
+
+```{r}
+tableLGBTQ <- xtabs(~infected + treatment,data=LGBTQDataSet)
+rowPerc(tableLGBTQ)
+colPerc(tableLGBTQ)
+```
+From the table above the vaccine is not effective.
+
+
+```{r}
+chisq.test(tableLGBTQ)
+chisqtestGC(tableLGBTQ)
+fisher.test(tableLGBTQ) -> fisherResult
+print(fisherResult)
+```
+
+Get the effectiveness for the odds ratio of `r round(fisherResult$estimate, 3)`
+
+```{r}
+effectiveness = fisherResult$estimate/(fisherResult$estimate+1)*100
+options(digits=1)
+```
+
+the drug effectiveness for females is `r effectiveness`%
+
 # Conclusions and recommendations
 
+In conclusion the the drug was not effective for males and gays, and the drug was effective for females and drug users. 
