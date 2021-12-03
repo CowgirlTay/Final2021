@@ -34,7 +34,7 @@ barchartGC(~infected + treatment,data=malesDataSet, type="percent")
 
 ```
 
-The plot shows that the ones who took the drug were more likely to get infected than those who took the placebo.
+The plot shows that the males who took the drug were more likely to get infected than those who took the placebo.
 
 ```{r}
 tableMales <- xtabs(~infected + treatment,data=malesDataSet)
@@ -60,6 +60,42 @@ options(digits=1)
 the drug effectiveness for males is `r effectiveness`%
 
 # Females
+
+```{r}
+femalesDataSet = filter(TheData, sex == "gal")
+```
+
+```{r}
+barchartGC(~infected + treatment,data=femalesDataSet)
+barchartGC(~infected + treatment,data=femalesDataSet, type="percent")
+
+```
+
+The plot shows that the females who took the drug were less likely to get infected than those who took the placebo.
+
+```{r}
+tableFemales <- xtabs(~infected + treatment,data=femalesDataSet)
+rowPerc(tableFemales)
+colPerc(tableFemales)
+```
+
+From the table above the vaccine is effective.
+
+```{r}
+chisq.test(tableFemales)
+chisqtestGC(tableFemales)
+fisher.test(tableFemales) -> fisherResult
+print(fisherResult)
+```
+
+Get the effectiveness for the odds ratio of `r round(fisherResult$estimate, 3)`
+
+```{r}
+effectiveness = fisherResult$estimate/(fisherResult$estimate+1)*100
+options(digits=1)
+```
+
+the drug effectiveness for females is `r effectiveness`%
 
 # Drug Users
 
