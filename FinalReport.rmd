@@ -99,6 +99,41 @@ the drug effectiveness for females is `r effectiveness`%
 
 # Drug Users
 
+```{r}
+druggiesDataSet = filter(TheData, DrugUser == "yes")
+```
+
+```{r}
+barchartGC(~infected + treatment,data=druggiesDataSet)
+barchartGC(~infected + treatment,data = druggiesDataSet, type="percent")
+
+```
+
+The plot shows that the drug users who took the drug were less likely to get infected than those who took the placebo.
+
+```{r}
+tableDrugUsers <- xtabs(~infected + treatment,data=druggiesDataSet)
+rowPerc(tableDrugUsers)
+colPerc(tableDrugUsers)
+```
+From the table above the vaccine is effective.
+
+```{r}
+chisq.test(tableDrugUsers)
+chisqtestGC(tableDrugUsers)
+fisher.test(tableDrugUsers) -> fisherResult
+print(fisherResult)
+```
+
+Get the effectiveness for the odds ratio of `r round(fisherResult$estimate, 3)`
+
+```{r}
+effectiveness = fisherResult$estimate/(fisherResult$estimate+1)*100
+options(digits=1)
+```
+
+the drug effectiveness for females is `r effectiveness`%
+
 # LGBTQ
 
 # Conclusions and recommendations
